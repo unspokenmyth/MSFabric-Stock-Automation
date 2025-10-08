@@ -1,0 +1,137 @@
+{
+    "name": "AlphaVintage_Ingestion",
+    "objectId": "1bef517f-82ea-46b3-b87c-c3664d647ea2",
+    "properties": {
+        "activities": [
+            {
+                "name": "GetStockList",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "LakehouseTableSource"
+                    },
+                    "firstRowOnly": false,
+                    "datasetSettings": {
+                        "annotations": [],
+                        "linkedService": {
+                            "name": "IndianMarkets",
+                            "properties": {
+                                "annotations": [],
+                                "type": "Lakehouse",
+                                "typeProperties": {
+                                    "workspaceId": "8948b954-6f30-4ed9-b576-1176a018b3d6",
+                                    "artifactId": "aba48799-3179-4a8d-b1f2-5e60b523dc89",
+                                    "rootFolder": "Tables"
+                                }
+                            }
+                        },
+                        "type": "LakehouseTable",
+                        "schema": [],
+                        "typeProperties": {
+                            "table": "stock_symbols"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "ProcessEachStock",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "GetStockList",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('GetStockList').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": true,
+                    "activities": [
+                        {
+                            "name": "GetVantageData",
+                            "type": "WebActivity",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "method": "GET",
+                                "relativeUrl": {
+                                    "value": "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=@{item().symbol}&interval=5min&apikey=YOUR_API_KEY&outputsize=compact",
+                                    "type": "Expression"
+                                }
+                            },
+                            "externalReferences": {
+                                "connection": "76c4f208-9867-4b58-96df-e1e33ba3f118"
+                            }
+                        },
+                        {
+                            "name": "ProcessStockData",
+                            "type": "TridentNotebook",
+                            "dependsOn": [
+                                {
+                                    "activity": "GetVantageData",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "notebookId": "0c8914af-5766-4b86-9d59-b61760f4b9a0",
+                                "workspaceId": "8948b954-6f30-4ed9-b576-1176a018b3d6"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "GoldData",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "ProcessEachStock",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "3a0f64bc-527d-40c0-8f4a-3cba686eea32",
+                    "workspaceId": "8948b954-6f30-4ed9-b576-1176a018b3d6"
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "46528d0e-d2a6-4d0d-8868-a62e360d2136",
+        "lastPublishTime": "2025-10-08T08:12:51Z"
+    }
+}
