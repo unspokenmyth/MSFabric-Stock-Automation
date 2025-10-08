@@ -41,6 +41,19 @@ The `GoldLayerAnalytics.ipynb` notebook consumes the enriched data from the Silv
 * **Storage:** OneLake (Delta Lake format)
 * **Data Source:** Alpha Vantage API
 
+## ⚙️ Automation & Scheduling
+
+The entire analytics process is designed for full automation within the Microsoft Fabric ecosystem.
+
+### Scheduled Pipeline Runs
+The main Fabric pipeline can be configured with a schedule trigger. This allows for automatic execution at set intervals (e.g., hourly, daily after market close) to ensure the analytical tables in the Gold layer are consistently updated with the latest data without any manual intervention.
+
+### Automated Email Reports
+Using **Microsoft Fabric Data Activator** or by adding an **Office 365 Outlook** activity at the end of the pipeline, automated email notifications can be sent upon successful completion. These emails can:
+* Summarize key findings, such as new trading signals or anomalies.
+* Attach a CSV export of the latest stock rankings.
+* Provide a direct link to a Power BI dashboard visualizing the results.
+
 ## 📓 Repository Contents
 
 * `CalculateTechnicalIndicators.ipynb`: The Spark notebook for transforming data from the Bronze to the Silver layer.
