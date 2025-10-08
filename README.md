@@ -7,7 +7,7 @@ This project is an end-to-end data pipeline built entirely within Microsoft Fabr
 The pipeline is orchestrated within Microsoft Fabric to automate the data flow from raw ingestion to curated analytics.
 
 
-*The high-level pipeline orchestration in Microsoft Fabric.*
+![My Pipeline Flow](./stockpipeline.jpg)
 
 The pipeline follows a multi-layered approach:
 
