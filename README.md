@@ -2,11 +2,10 @@
 
 This project is an end-to-end data pipeline built entirely within Microsoft Fabric. It ingests real-time stock data from the Alpha Vantage API, processes it through a Medallion architecture (Bronze, Silver, Gold), and generates actionable trading insights.
 
----
-
 ## 📊 Architecture & Data Flow
 
 The pipeline is orchestrated within Microsoft Fabric to automate the data flow from raw ingestion to curated analytics.
+
 
 *The high-level pipeline orchestration in Microsoft Fabric.*
 
@@ -35,8 +34,6 @@ The `GoldLayerAnalytics.ipynb` notebook consumes the enriched data from the Silv
     * `gold_volatility_metrics`: Calculates daily volatility and price range percentages.
     * `gold_anomalies`: Detects unusual price or volume movements.
 
----
-
 ## 🛠️ Technologies Used
 
 * **Platform:** Microsoft Fabric
@@ -44,9 +41,8 @@ The `GoldLayerAnalytics.ipynb` notebook consumes the enriched data from the Silv
 * **Storage:** OneLake (Delta Lake format)
 * **Data Source:** Alpha Vantage API
 
----
-
 ## 📓 Repository Contents
 
 * `CalculateTechnicalIndicators.ipynb`: The Spark notebook for transforming data from the Bronze to the Silver layer.
 * `GoldLayerAnalytics.ipynb`: The Spark notebook for aggregating Silver data into the Gold layer for final analysis.
+* `pipeline.json`: The JSON definition of the Microsoft Fabric pipeline, detailing all activities, connections, and configurations used for orchestration.
